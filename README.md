@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# Redux-Basics
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- npm install react-redux @reduxjs/toolkit
 
-## Available Scripts
+```
+// ...index.js
 
-In the project directory, you can run:
+import {Provider} from "react-redux;
+import store from "./store/index";
 
-### `npm start`
+...
+root.render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+// ...src/store/index.js
 
-### `npm test`
+import { configureStore } from "@reduxjs/toolkit";
+...
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+const store = configureStore({
+  reducer: { counter: counterSlice, auth: authSlice }
+});
 
-### `npm run build`
+export default store;
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- 스토어는 프로젝트 당 하나만 가진다.
+- `@reduxjs/toolkit`의 configureStore로 여러 리듀서들을 한번에 컨트롤 할 수 있다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+// ...src/store/authSlice.js
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+import {createSlice} from "@reduxjs/toolkit";
 
-### `npm run eject`
+const authSlice = createSlice({
+  name: "authentication",
+  initialState: { isAuthenticated: false },
+  reducers: {
+    login(state) {
+      state.isAuthenticated = true;
+    },
+    logout(state) {
+      state.isAuthenticated = false;
+    }
+  }
+});
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+export const authActions = authSlice.actions;
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+export default authSlice.reducer;
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- createSlice 함수를 redux toolkit에서 사용
+- name, initialState, reducers 프로퍼티를 가진다.
+- reducers들을 authActions라는 변수에 담음
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+import { useSelector, useDispatch } from "react-redux";
+import { authActions } from "../store/authSlice";
 
-## Learn More
+function Header() {
+  const isAuth = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  const logoutHandler = () => {
+    dispatch(authActions.logout());
+  };
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  return (
+    ...
+    <button onClick={logoutHandler}>Logout</button>
+  )
+}
+```
 
-### Code Splitting
+- react-redux에서 useSelector 함수와 useDispatch 함수를 가져와서 사용함
+- useSelector로 state를 읽고 조회함.
+- useDispatch로 action을 발생시킨다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[React Complete Guid with Redux and Typescript](https://www.udemy.com/course/best-react/)
