@@ -1,70 +1,102 @@
-# Getting Started with Create React App
+# React-Router-DOM
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+```plaintext
+npm install react-router-dom
+```
 
-## Available Scripts
+```
+//...index.js
 
-In the project directory, you can run:
+...
+import { BrowserRouter } from "react-router-dom";
 
-### `npm start`
+...
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+)
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- react-router-dom에서 BrowserRouter를 가져와 App을 감싸준다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+//...App.js
 
-### `npm test`
+...
+import { Routes, Route } from "react-router-dom";
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />}>
+    </Routes>
+  )
+}
+```
 
-### `npm run build`
+- react-router-dom에서 Routes와 Route를 가져온다.
+  - Route는 반드시 Routes의 자식 컴포넌트로 감싸져 있어야한다.
+  - Route의 path는 상대경로, element props에는 경로에 해당하는 컴포너트를 넣어야 한다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+import { Link } from "react-router-dom";
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+function Home() {
+  return <Link to="/about">About</Link>
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+export default Home;
+```
 
-### `npm run eject`
+- React에서는 a 태그 대신 react-router-dom의 Link 혹은 NavLink를 사용한다.
+- a 태그는 새로고침을 일으키기에 어울리지 않는다.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+...
+import { useNavigate } from "react-router-dom";
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+function Home() {
+  const navigate = useNavigate();
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+  const onClick = () => {
+    navigate("/about")
+  }
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  return <button onClick={onClick}>소개로 가기</button>
+}
+...
+```
 
-## Learn More
+- Link 대신에 useNavigate 함수를 사용해서 이동할 수 있다.
+- useNavigate 함수의 첫 번째 인자는 가려고 하는 경로를 뜻하고 두 번째 인자는 함수의 옵션을 가진다.
+  - 만약 뒤로 가고 싶으면 navigate(-1) 을 하면 된다.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+//App.js
+function App() {
+  return (
+    <Routes>
+      <Route path="movie" element={<Movie />}>
+      <Route path="movie/:movieId" element={<MovieDetail />} />
+    </Routes>
+  )
+}
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+//MovieDetail.js
+...
+import { useParams } = "react-router-dom";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+function MovieDetail() {
+  const params = useParams();
+  return (
+    <div>{params.movieId}</div>
+  )
+}
+```
 
-### Analyzing the Bundle Size
+- useParams 함수로 url 파라미터 값을 가져와서 활용 할 수 있다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[React-Complete-Course](https://www.udemy.com/course/best-react/)
