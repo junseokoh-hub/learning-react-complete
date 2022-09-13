@@ -8,7 +8,7 @@ export async function getAllQuotes() {
     throw new Error(data.message || "Could not fetch quotes.");
   }
 
-  const transformedQuote = [];
+  const transformedQuotes = [];
 
   for (const key in data) {
     const quoteObj = {
@@ -19,7 +19,7 @@ export async function getAllQuotes() {
     transformedQuotes.push(quoteObj);
   }
 
-  return transformedQuote;
+  return transformedQuotes;
 }
 
 export async function getSingleQuote(quoteId) {
