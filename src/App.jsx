@@ -15,7 +15,8 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        {isLoggedIn && <Route path="/" element={<HomePage />} />}
+        {!isLoggedIn && <Route path="/" element={<Navigate to="/auth" />} />}
         {!isLoggedIn && <Route path="/auth" element={<AuthPage />} />}
         {isLoggedIn && <Route path="/profile" element={<UserProfile />} />}
         {!isLoggedIn && (
