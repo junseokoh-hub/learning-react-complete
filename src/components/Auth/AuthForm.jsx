@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../../store/authContext";
 
 import classes from "./AuthForm.module.css";
 
@@ -7,6 +8,10 @@ function AuthForm() {
   const KEY = process.env.REACT_APP_API_KEY;
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+
+  const authCtx = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
@@ -52,7 +57,8 @@ function AuthForm() {
         }
       })
       .then((data) => {
-        console.log(data);
+        authCtx.login(data.idToken);
+        navigate("/", { replace: true });
       })
       .catch((err) => alert(err.message));
   };
